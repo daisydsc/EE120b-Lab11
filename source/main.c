@@ -260,10 +260,10 @@ int main(){
     task2.elapsedTime = task2.period;
     task2.TickFct = &ColumnSelect;
 	
-    task3.state = Board;
-    task3.period = 1;
-    task3.elapsedTime = task3.period;
-    task3.TickFct = &GameBoard;
+//     task3.state = Board;
+//     task3.period = 1;
+//     task3.elapsedTime = task3.period;
+//     task3.TickFct = &GameBoard;
 	
     task4.state = DisplayLoop;
     task4.period = 1;
