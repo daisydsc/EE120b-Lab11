@@ -155,7 +155,7 @@ int Drop(int state) {
 			down >>= 1;
 			break;
 	}
-	PORTC = down;
+	tempC1 = down;
 	return state;
 }
 			
@@ -223,7 +223,7 @@ int ColumnSelect(int state){
 		case ColumnPressed:
 			break;
 	}
-	PORTD = column;
+	tempD1 = column;
 	return state;
 }
 
