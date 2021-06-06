@@ -81,7 +81,7 @@ unsigned char tempD2;
 unsigned char tempC1 = 0x80;
 unsigned char tempC2;
 unsigned char tempB1;
-/*
+
 enum Board_states { Board };
 int GameBoard(int state) {
 	static unsigned char pattern;
@@ -104,10 +104,11 @@ int GameBoard(int state) {
                         }
                         break;
 	}
-	tempD2 = row;
-	tempC2 = columnPattern[rowNum];
+	PORTD = row;
+	PORTC = columnPattern[rowNum];
 	return state;
-}*/
+}
+
 
 enum Drop_states { DropStart, DropWait, DropEnter };
 int Drop(int state) {
@@ -148,7 +149,7 @@ int Drop(int state) {
 			down >>= 1;
 			break;
 	}
-	tempC1 = down;
+	PORTC = down;
 	return state;
 }
 			
@@ -216,25 +217,25 @@ int ColumnSelect(int state){
 		case ColumnPressed:
 			break;
 	}
-	tempD1 = column;
+	PORTD = column;
 	return state;
 }
 
-enum Display_states { DisplayLoop };
-int Display(int state) {
-	switch (state) {
-		case DisplayLoop:
-			state = DisplayLoop;
-			break;
-	}
-	switch (state) {
-		case DisplayLoop:
-			PORTD = tempD1; //& tempD2;
-			PORTC = tempC1; //| tempC2;
-			break;
-	}
-	return state;
-}
+// enum Display_states { DisplayLoop };
+// int Display(int state) {
+// 	switch (state) {
+// 		case DisplayLoop:
+// 			state = DisplayLoop;
+// 			break;
+// 	}
+// 	switch (state) {
+// 		case DisplayLoop:
+// 			PORTD = tempD1; //& tempD2;
+// 			PORTC = tempC1; //| tempC2;
+// 			break;
+// 	}
+// 	return state;
+// }
 
 
 
@@ -260,15 +261,15 @@ int main(){
     task2.elapsedTime = task2.period;
     task2.TickFct = &ColumnSelect;
 	
-//     task3.state = Board;
-//     task3.period = 1;
-//     task3.elapsedTime = task3.period;
-//     task3.TickFct = &GameBoard;
+    task3.state = Board;
+    task3.period = 1;
+    task3.elapsedTime = task3.period;
+    task3.TickFct = &GameBoard;
 	
-    task4.state = DisplayLoop;
-    task4.period = 1;
-    task4.elapsedTime = task4.period;
-    task4.TickFct = &Display;
+//     task4.state = DisplayLoop;
+//     task4.period = 1;
+//     task4.elapsedTime = task4.period;
+//     task4.TickFct = &Display;
 	
     unsigned long GCD = tasks[0]->period;
 	for (i = 1; i < numTasks; i++) {
