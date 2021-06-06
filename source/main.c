@@ -15,7 +15,7 @@
 #include "simAVRHeader.h"
 #endif
 
-/*
+
 enum Demo_States {shift};
 int Demo_Tick(int state){
         static unsigned char pattern = 0x80;
@@ -51,7 +51,7 @@ int Demo_Tick(int state){
         PORTD = row;
         return state;
 }
-*/
+
 /*
 enum 1p_states { 1pDisplay };
 int 1pdisplay(int state) {
@@ -82,38 +82,38 @@ unsigned char tempC1 = 0x80;
 unsigned char tempC2;
 unsigned char tempB1;
 
-enum Board_states { Board };
-int GameBoard(int state) {
-	static unsigned char pattern = 0x80;
-        static unsigned char row = 0x7F;
-        switch(state){
-                case Board:
-                        break;
-                default:
-                        state = Board;
-                        break;
-        }
-        switch(state){
-                case Board:
-                        if(row == 0xFE && pattern == 0x01){
-                                pattern = 0x80;
-                                row = 0x7F;
-                        }
-                        else if(pattern == 0x01){
-                                pattern = 0x80;
-                                row = (row >> 1) | 0x80;
-                        }
-                        else{
-                                pattern >>= 1;
-                        }
-                        break;
-                default:
-                        break;
-        }
-        PORTC = pattern;
-        PORTD = row;
-        return state;
-}
+// enum Board_states { Board };
+// int GameBoard(int state) {
+// 	static unsigned char pattern = 0x80;
+//         static unsigned char row = 0x7F;
+//         switch(state){
+//                 case Board:
+//                         break;
+//                 default:
+//                         state = Board;
+//                         break;
+//         }
+//         switch(state){
+//                 case Board:
+//                         if(row == 0xFE && pattern == 0x01){
+//                                 pattern = 0x80;
+//                                 row = 0x7F;
+//                         }
+//                         else if(pattern == 0x01){
+//                                 pattern = 0x80;
+//                                 row = (row >> 1) | 0x80;
+//                         }
+//                         else{
+//                                 pattern >>= 1;
+//                         }
+//                         break;
+//                 default:
+//                         break;
+//         }
+//         PORTC = pattern;
+//         PORTD = row;
+//         return state;
+// }
 
 
 // enum Drop_states { DropStart, DropWait, DropEnter };
@@ -267,10 +267,10 @@ int main(){
 //     task2.elapsedTime = task2.period;
 //     task2.TickFct = &ColumnSelect;
 	
-    task3.state = Board;
+    task3.state = shift;
     task3.period = 100;
     task3.elapsedTime = task3.period;
-    task3.TickFct = &GameBoard;
+    task3.TickFct = &Demo_Tick;
 	
 //     task4.state = DisplayLoop;
 //     task4.period = 1;
