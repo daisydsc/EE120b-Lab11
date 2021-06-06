@@ -16,42 +16,40 @@
 #endif
 
 
-// enum Demo_States {shift};
-// int Demo_Tick(int state){
-//         static unsigned char pattern = 0x80;
-//         static unsigned char row = 0xFE;
-
-//         switch(state){
-//                 case shift:
-//                         break;
-//                 default:
-//                         state = shift;
-//                         break;
-//         }
-
-//         switch(state){
-//                 case shift:
-//                         if(row == 0x7F && pattern == 0x01){
-//                                 pattern = 0x80;
-//                                 row = 0xFE;
-//                         }
-//                         else if(pattern == 0x01){
-//                                 pattern = 0x80;
-//                                 row = (row << 1) | 0x01;
-//                         }
-//                         else{
-//                                 pattern >>= 1;
-//                         }
-//                         break;
-//                 default:
-//                         break;
-//         }
-
-//         PORTC = pattern;
-//         PORTD = row;
-//         return state;
-// }
-
+/*
+enum Demo_States {shift};
+int Demo_Tick(int state){
+        static unsigned char pattern = 0x80;
+        static unsigned char row = 0x7F;
+        switch(state){
+                case shift:
+                        break;
+                default:
+                        state = shift;
+                        break;
+        }
+        switch(state){
+                case shift:
+                        if(row == 0xFE && pattern == 0x01){
+                                pattern = 0x80;
+                                row = 0x7F;
+                        }
+                        else if(pattern == 0x01){
+                                pattern = 0x80;
+                                row = (row >> 1) | 0x80;
+                        }
+                        else{
+                                pattern >>= 1;
+                        }
+                        break;
+                default:
+                        break;
+        }
+        PORTC = pattern;
+        PORTD = row;
+        return state;
+}
+*/
 /*
 enum 1p_states { 1pDisplay };
 int 1pdisplay(int state) {
@@ -71,50 +69,43 @@ int 1pdisplay(int state) {
 */			
 
 unsigned char columnCount[8] = {7, 7, 7, 7, 7, 7, 7, 7};
-unsigned char columnPattern[8] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};
+unsigned char columnPattern[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 unsigned char columnNum = 0;
 unsigned char column = 0x7F;
 unsigned char down = 0x80;
 unsigned char i = 0;
-unsigned char tempD1 = 0x7F;
+unsigned char tempD1;
 unsigned char tempD2;
-unsigned char tempC1 = 0x80;
+unsigned char tempC1;
 unsigned char tempC2;
 unsigned char tempB1;
-
-// enum Board_states { Board };
-// int GameBoard(int state) {
-// 	static unsigned char pattern = 0x80;
-//         static unsigned char row = 0x7F;
-//         switch(state){
-//                 case Board:
-//                         break;
-//                 default:
-//                         state = Board;
-//                         break;
-//         }
-//         switch(state){
-//                 case Board:
-//                         if(row == 0xFE && pattern == 0x01){
-//                                 pattern = 0x80;
-//                                 row = 0x7F;
-//                         }
-//                         else if(pattern == 0x01){
-//                                 pattern = 0x80;
-//                                 row = (row >> 1) | 0x80;
-//                         }
-//                         else{
-//                                 pattern >>= 1;
-//                         }
-//                         break;
-//                 default:
-//                         break;
-//         }
-//         PORTC = pattern;
-//         PORTD = row;
-//         return state;
-// }
-
+/*
+enum Board_states { Board };
+int GameBoard(int state) {
+	static unsigned char pattern;
+        static unsigned char row = 0x7F;
+	static unsigned char rowNum = 0;
+	switch(state) {
+		case Board:
+			state = Board;
+			break;
+	}
+	switch(state) {
+		case Board:
+			if(row == 0xFE){
+                                row = 0x7F;
+				rowNum = 0;
+                        }
+                        else{
+                                row = (row >> 1) | 0x80;
+				rowNum += 1;
+                        }
+                        break;
+	}
+	tempD2 = row;
+	tempC2 = columnPattern[rowNum];
+	return state;
+}*/
 
 enum Drop_states { DropStart, DropWait, DropEnter };
 int Drop(int state) {
@@ -139,7 +130,7 @@ int Drop(int state) {
 				state = DropWait;
 				i = 0;
 				columnCount[columnNum] -= 1;
-				columnPattern[columnNum] = ((columnPattern[columnNum] << 1) | 0x01);
+				columnPattern[columnNum] = (columnPattern[columnNum] << 1) | 0x01;
 				columnNum = 0;
 				column = 0x7F;
 			}
@@ -236,8 +227,8 @@ int ColumnSelect(int state){
 // 	}
 // 	switch (state) {
 // 		case DisplayLoop:
-// 			PORTD = tempD1; //& tempD2;
-// 			PORTC = tempC1; //| tempC2;
+// 			PORTD = tempD1 & tempD2;
+// 			PORTC = tempC1 | tempC2;
 // 			break;
 // 	}
 // 	return state;
@@ -252,7 +243,7 @@ int main(){
     DDRD = 0xFF; PORTD = 0x00;
 
     static task task1, task2, task3, task4;
-    task *tasks[] = {&task1, &task2, &task3, &task4};
+    task *tasks[] = {&task1, &task2};
     const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
 
     const char start = -1;
@@ -267,10 +258,10 @@ int main(){
     task2.elapsedTime = task2.period;
     task2.TickFct = &ColumnSelect;
 	
-//     task1.state = shift;
-//     task1.period = 100;
-//     task1.elapsedTime = task3.period;
-//     task1.TickFct = &Demo_Tick;
+//     task3.state = Board;
+//     task3.period = 1;
+//     task3.elapsedTime = task3.period;
+//     task3.TickFct = &GameBoard;
 	
 //     task4.state = DisplayLoop;
 //     task4.period = 1;
