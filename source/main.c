@@ -90,7 +90,7 @@ int GameBoard(int state) {
                 case Board:
                         break;
                 default:
-                        state = shift;
+                        state = Board;
                         break;
         }
         switch(state){
