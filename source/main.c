@@ -221,11 +221,11 @@ int ColumnSelect(int state){
 enum Display_states { DisplayCol /*, DisplayDrop, DisplayBoard */};
 int Display(int state) {
 	switch (state) {
-		case DisplayLoop:
+		case DisplayCol:
 			break;
 	}
 	switch (state) {
-		case DisplayLoop:
+		case DisplayCol:
 			PORTD = column;
 			PORTC = down;
 			break;
