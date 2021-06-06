@@ -148,7 +148,7 @@ int Drop(int state) {
 			down >>= 1;
 			break;
 	}
-	PORTC = down;
+	tempC1 = down;
 	return state;
 }
 			
@@ -216,25 +216,25 @@ int ColumnSelect(int state){
 		case ColumnPressed:
 			break;
 	}
-	PORTD = column;
+	tempD1 = column;
 	return state;
 }
 
-// enum Display_states { DisplayLoop };
-// int Display(int state) {
-// 	switch (state) {
-// 		case DisplayLoop:
-// 			state = DisplayLoop;
-// 			break;
-// 	}
-// 	switch (state) {
-// 		case DisplayLoop:
-// 			PORTD = tempD1 & tempD2;
-// 			PORTC = tempC1 | tempC2;
-// 			break;
-// 	}
-// 	return state;
-// }
+enum Display_states { DisplayLoop };
+int Display(int state) {
+	switch (state) {
+		case DisplayLoop:
+			state = DisplayLoop;
+			break;
+	}
+	switch (state) {
+		case DisplayLoop:
+			PORTD = tempD1; //& tempD2;
+			PORTC = tempC1; //| tempC2;
+			break;
+	}
+	return state;
+}
 
 
 
@@ -265,10 +265,10 @@ int main(){
 //     task3.elapsedTime = task3.period;
 //     task3.TickFct = &GameBoard;
 	
-//     task4.state = DisplayLoop;
-//     task4.period = 1;
-//     task4.elapsedTime = task4.period;
-//     task4.TickFct = &Display;
+    task4.state = DisplayLoop;
+    task4.period = 1;
+    task4.elapsedTime = task4.period;
+    task4.TickFct = &Display;
 	
     unsigned long GCD = tasks[0]->period;
 	for (i = 1; i < numTasks; i++) {
