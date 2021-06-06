@@ -84,28 +84,35 @@ unsigned char tempB1;
 
 enum Board_states { Board };
 int GameBoard(int state) {
-	static unsigned char pattern;
-        static unsigned char col = 0x7F;
-	static unsigned char colNum = 0;
-	switch(state) {
-		case Board:
-			break;
-	}
-	switch(state) {
-		case Board:
-			if(col == 0xFE){
-                                col = 0x7F;
-				colNum = 0;
+	static unsigned char pattern = 0x80;
+        static unsigned char row = 0x7F;
+        switch(state){
+                case Board:
+                        break;
+                default:
+                        state = shift;
+                        break;
+        }
+        switch(state){
+                case Board:
+                        if(row == 0xFE && pattern == 0x01){
+                                pattern = 0x80;
+                                row = 0x7F;
+                        }
+                        else if(pattern == 0x01){
+                                pattern = 0x80;
+                                row = (row >> 1) | 0x80;
                         }
                         else{
-                                col = (col >> 1) | 0x80;
-				colNum ++;
+                                pattern >>= 1;
                         }
                         break;
-	}
-	PORTD = 0x7F;
-	PORTC = 0x01;
-	return state;
+                default:
+                        break;
+        }
+        PORTC = pattern;
+        PORTD = row;
+        return state;
 }
 
 
