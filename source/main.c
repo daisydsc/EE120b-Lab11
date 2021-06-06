@@ -218,12 +218,17 @@ int ColumnSelect(int state){
 	return state;
 }
 
-// enum Display_states { DisplayCol /*, DisplayDrop, DisplayBoard */};
+// enum Display_states { DisplayLoop };
 // int Display(int state) {
 // 	switch (state) {
-// 		case DisplayCol:
-// 			PORTD = column;
-// 			PORTC = down;
+// 		case DisplayLoop:
+// 			state = DisplayLoop;
+// 			break;
+// 	}
+// 	switch (state) {
+// 		case DisplayLoop:
+// 			PORTD = tempD1 & tempD2;
+// 			PORTC = tempC1 | tempC2;
 // 			break;
 // 	}
 // 	return state;
@@ -238,7 +243,7 @@ int main(){
     DDRD = 0xFF; PORTD = 0x00;
 
     static task task1, task2, task3, task4;
-    task *tasks[] = {&task1, &task2, &task3, &task4};
+    task *tasks[] = {&task1, &task2};
     const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
 
     const char start = -1;
@@ -258,8 +263,8 @@ int main(){
 //     task3.elapsedTime = task3.period;
 //     task3.TickFct = &GameBoard;
 	
-//     task4.state = DisplayCol;
-//     task4.period = 50;
+//     task4.state = DisplayLoop;
+//     task4.period = 1;
 //     task4.elapsedTime = task4.period;
 //     task4.TickFct = &Display;
 	
