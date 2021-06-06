@@ -68,7 +68,7 @@ int 1pdisplay(int state) {
 		for(count = 0; count < 8; count++) {
 */			
 
-unsigned char columnCount[8] = {7, 7, 7, 7, 7, 7, 7, 7};
+unsigned char columnCount[8] = {6, 6, 6, 6, 6, 6, 6, 6};
 unsigned char columnPattern[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 unsigned char columnNum = 0;
 unsigned char column = 0x7F;
