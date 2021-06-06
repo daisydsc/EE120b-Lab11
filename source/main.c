@@ -104,7 +104,7 @@ int GameBoard(int state) {
                         break;
 	}
 	PORTD = col;
-	PORTC = columnPattern[colNum];
+	PORTC = 0x01;
 	return state;
 }
 
