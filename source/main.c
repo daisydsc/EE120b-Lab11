@@ -19,7 +19,7 @@
 enum Demo_States {shift};
 int Demo_Tick(int state){
         static unsigned char pattern = 0x80;
-        static unsigned char row = 0x7F;
+        static unsigned char row = 0xFE;
 
         switch(state){
                 case shift:
@@ -31,13 +31,13 @@ int Demo_Tick(int state){
 
         switch(state){
                 case shift:
-                        if(row == 0xFE && pattern == 0x01){
+                        if(row == 0x7F && pattern == 0x01){
                                 pattern = 0x80;
-                                row = 0x7F;
+                                row = 0xFE;
                         }
                         else if(pattern == 0x01){
                                 pattern = 0x80;
-                                row = (row >> 1) | 0x80;
+                                row = (row << 1) | 0x01;
                         }
                         else{
                                 pattern >>= 1;
