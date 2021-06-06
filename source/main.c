@@ -262,7 +262,7 @@ int main(){
 //     task3.elapsedTime = task3.period;
 //     task3.TickFct = &GameBoard;
 	
-    task4.state = DisplayLoop;
+    task4.state = DisplayCol;
     task4.period = 1;
     task4.elapsedTime = task4.period;
     task4.TickFct = &Display;
