@@ -268,7 +268,7 @@ int main(){
 //     task2.TickFct = &ColumnSelect;
 	
     task3.state = Board;
-    task3.period = 1;
+    task3.period = 100;
     task3.elapsedTime = task3.period;
     task3.TickFct = &GameBoard;
 	
