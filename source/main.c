@@ -81,7 +81,7 @@ unsigned char tempD2;
 unsigned char tempC1;
 unsigned char tempC2;
 unsigned char tempB1;
-
+/*
 enum Board_states { Board };
 int GameBoard(int state) {
 	static unsigned char pattern;
@@ -107,7 +107,7 @@ int GameBoard(int state) {
 	tempD2 = row;
 	tempC2 = columnPattern[rowNum];
 	return state;
-}
+}*/
 
 enum Drop_states { DropStart, DropWait, DropEnter };
 int Drop(int state) {
