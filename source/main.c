@@ -222,10 +222,6 @@ enum Display_states { DisplayCol /*, DisplayDrop, DisplayBoard */};
 int Display(int state) {
 	switch (state) {
 		case DisplayCol:
-			break;
-	}
-	switch (state) {
-		case DisplayCol:
 			PORTD = column;
 			PORTC = down;
 			break;
@@ -263,7 +259,7 @@ int main(){
 //     task3.TickFct = &GameBoard;
 	
     task4.state = DisplayCol;
-    task4.period = 1;
+    task4.period = 50;
     task4.elapsedTime = task4.period;
     task4.TickFct = &Display;
 	
