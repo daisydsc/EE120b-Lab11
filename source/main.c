@@ -89,7 +89,6 @@ int GameBoard(int state) {
 	static unsigned char colNum = 0;
 	switch(state) {
 		case Board:
-			state = Board;
 			break;
 	}
 	switch(state) {
@@ -100,7 +99,7 @@ int GameBoard(int state) {
                         }
                         else{
                                 col = (col >> 1) | 0x80;
-				colNum += 1;
+				colNum ++;
                         }
                         break;
 	}
