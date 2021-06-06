@@ -16,41 +16,41 @@
 #endif
 
 
-enum Demo_States {shift};
-int Demo_Tick(int state){
-        static unsigned char pattern = 0x80;
-        static unsigned char row = 0xFE;
+// enum Demo_States {shift};
+// int Demo_Tick(int state){
+//         static unsigned char pattern = 0x80;
+//         static unsigned char row = 0xFE;
 
-        switch(state){
-                case shift:
-                        break;
-                default:
-                        state = shift;
-                        break;
-        }
+//         switch(state){
+//                 case shift:
+//                         break;
+//                 default:
+//                         state = shift;
+//                         break;
+//         }
 
-        switch(state){
-                case shift:
-                        if(row == 0x7F && pattern == 0x01){
-                                pattern = 0x80;
-                                row = 0xFE;
-                        }
-                        else if(pattern == 0x01){
-                                pattern = 0x80;
-                                row = (row << 1) | 0x01;
-                        }
-                        else{
-                                pattern >>= 1;
-                        }
-                        break;
-                default:
-                        break;
-        }
+//         switch(state){
+//                 case shift:
+//                         if(row == 0x7F && pattern == 0x01){
+//                                 pattern = 0x80;
+//                                 row = 0xFE;
+//                         }
+//                         else if(pattern == 0x01){
+//                                 pattern = 0x80;
+//                                 row = (row << 1) | 0x01;
+//                         }
+//                         else{
+//                                 pattern >>= 1;
+//                         }
+//                         break;
+//                 default:
+//                         break;
+//         }
 
-        PORTC = pattern;
-        PORTD = row;
-        return state;
-}
+//         PORTC = pattern;
+//         PORTD = row;
+//         return state;
+// }
 
 /*
 enum 1p_states { 1pDisplay };
@@ -116,132 +116,132 @@ unsigned char tempB1;
 // }
 
 
-// enum Drop_states { DropStart, DropWait, DropEnter };
-// int Drop(int state) {
-// 	switch(state) {
-// 		case DropStart:
-// 			state = DropWait;
-// 			break;
-// 		case DropWait:
-// 			if(~PINA & 0x02) {
-// 				state = DropEnter;
-// 			}
-// 			else {
-// 				state = DropWait;
-// 			}
-// 			break;
-// 		case DropEnter:
-// 			if(i < columnCount[columnNum]) {
-// 				state = DropEnter;
-// 				i++;
-// 			}
-// 			else {
-// 				state = DropWait;
-// 				i = 0;
-// 				columnCount[columnNum] -= 1;
-// 				columnPattern[columnNum] = ((columnPattern[columnNum] << 1) | 0x01);
-// 				columnNum = 0;
-// 				column = 0x7F;
-// 			}
-// 			break;
-// 	}
-// 	switch(state) {
-// 		case DropStart:
-// 			break;
-// 		case DropWait:
-// 			down = 0x80;
-// 			break;
-// 		case DropEnter:
-// 			down >>= 1;
-// 			break;
-// 	}
-// 	PORTC = down;
-// 	return state;
-// }
+enum Drop_states { DropStart, DropWait, DropEnter };
+int Drop(int state) {
+	switch(state) {
+		case DropStart:
+			state = DropWait;
+			break;
+		case DropWait:
+			if(~PINA & 0x02) {
+				state = DropEnter;
+			}
+			else {
+				state = DropWait;
+			}
+			break;
+		case DropEnter:
+			if(i < columnCount[columnNum]) {
+				state = DropEnter;
+				i++;
+			}
+			else {
+				state = DropWait;
+				i = 0;
+				columnCount[columnNum] -= 1;
+				columnPattern[columnNum] = ((columnPattern[columnNum] << 1) | 0x01);
+				columnNum = 0;
+				column = 0x7F;
+			}
+			break;
+	}
+	switch(state) {
+		case DropStart:
+			break;
+		case DropWait:
+			down = 0x80;
+			break;
+		case DropEnter:
+			down >>= 1;
+			break;
+	}
+	PORTC = down;
+	return state;
+}
 			
 				
 
-// enum Column_states { ColumnStart, ColumnWait, ColumnRight, ColumnLeft, ColumnPressed };
-// int ColumnSelect(int state){
-// 	switch(state) {
-// 		case ColumnStart:
-// 			state = ColumnWait;
-// 			break;
-// 		case ColumnWait:
-// 			if(~PINA & 0x01) {
-// 				state = ColumnRight;
-// 			}
-// 			else if(~PINA & 0x04) {
-// 				state = ColumnLeft;
-// 			}
-// 			else {
-// 				state = ColumnWait;
-// 			}
-// 			break;
-// 		case ColumnRight:
-// 			if(~PINA & 0x01) {
-// 				state = ColumnPressed;
-// 			}
-// 			else {
-// 				state = ColumnWait;
-// 			}
-// 			break;
-// 		case ColumnLeft:
-// 			if(~PINA & 0x04) {
-// 				state = ColumnPressed;
-// 			}
-// 			else {
-// 				state = ColumnWait;
-// 			}
-// 			break;
-// 		case ColumnPressed:
-// 			if(!(~PINA & 0x01) & !(~PINA & 0x04)) {
-// 				state = ColumnWait;
-// 			}
-// 			else {
-// 				state = ColumnPressed;
-// 			}
-// 			break;
-// 	}
-// 	switch(state){
-// 		case ColumnStart:
-// 			break;
-// 		case ColumnWait:
-// 			break;
-// 		case ColumnRight:
-// 			if(column != 0xFE) {
-// 				column = (column >> 1) | 0x80;
-// 				columnNum += 1;
-// 			}
-// 			break;
-// 		case ColumnLeft:
-// 			if(column != 0x7F) {
-// 				column = (column << 1) | 0x01;
-// 				columnNum -= 1;
-// 			}
-// 			break;
-// 		case ColumnPressed:
-// 			break;
-// 	}
-// 	PORTD = column;
-// 	return state;
-// }
+enum Column_states { ColumnStart, ColumnWait, ColumnRight, ColumnLeft, ColumnPressed };
+int ColumnSelect(int state){
+	switch(state) {
+		case ColumnStart:
+			state = ColumnWait;
+			break;
+		case ColumnWait:
+			if(~PINA & 0x01) {
+				state = ColumnRight;
+			}
+			else if(~PINA & 0x04) {
+				state = ColumnLeft;
+			}
+			else {
+				state = ColumnWait;
+			}
+			break;
+		case ColumnRight:
+			if(~PINA & 0x01) {
+				state = ColumnPressed;
+			}
+			else {
+				state = ColumnWait;
+			}
+			break;
+		case ColumnLeft:
+			if(~PINA & 0x04) {
+				state = ColumnPressed;
+			}
+			else {
+				state = ColumnWait;
+			}
+			break;
+		case ColumnPressed:
+			if(!(~PINA & 0x01) & !(~PINA & 0x04)) {
+				state = ColumnWait;
+			}
+			else {
+				state = ColumnPressed;
+			}
+			break;
+	}
+	switch(state){
+		case ColumnStart:
+			break;
+		case ColumnWait:
+			break;
+		case ColumnRight:
+			if(column != 0xFE) {
+				column = (column >> 1) | 0x80;
+				columnNum += 1;
+			}
+			break;
+		case ColumnLeft:
+			if(column != 0x7F) {
+				column = (column << 1) | 0x01;
+				columnNum -= 1;
+			}
+			break;
+		case ColumnPressed:
+			break;
+	}
+	PORTD = column;
+	return state;
+}
 
-// enum Display_states { DisplayLoop };
-// int Display(int state) {
-// 	switch (state) {
-// 		case DisplayLoop:
-// 			state = DisplayLoop;
-// 			break;
-// 	}
-// 	switch (state) {
-// 		case DisplayLoop:
-// 			PORTD = tempD1; //& tempD2;
-// 			PORTC = tempC1; //| tempC2;
-// 			break;
-// 	}
-// 	return state;
-// }
+enum Display_states { DisplayLoop };
+int Display(int state) {
+	switch (state) {
+		case DisplayLoop:
+			state = DisplayLoop;
+			break;
+	}
+	switch (state) {
+		case DisplayLoop:
+			PORTD = tempD1; //& tempD2;
+			PORTC = tempC1; //| tempC2;
+			break;
+	}
+	return state;
+}
 
 
 
@@ -252,30 +252,30 @@ int main(){
     DDRD = 0xFF; PORTD = 0x00;
 
     static task task1, task2, task3, task4;
-    task *tasks[] = {&task1, &task2};
+    task *tasks[] = {&task1, &task2, &task3, &task4};
     const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
 
     const char start = -1;
 
-//     task1.state = DropStart;
-//     task1.period = 100;
-//     task1.elapsedTime = task1.period;
-//     task1.TickFct = &Drop;
-	
-//     task2.state = ColumnStart;
-//     task2.period = 50;
-//     task2.elapsedTime = task2.period;
-//     task2.TickFct = &ColumnSelect;
-	
-    task1.state = shift;
+    task1.state = DropStart;
     task1.period = 100;
-    task1.elapsedTime = task3.period;
-    task1.TickFct = &Demo_Tick;
+    task1.elapsedTime = task1.period;
+    task1.TickFct = &Drop;
 	
-//     task4.state = DisplayLoop;
-//     task4.period = 1;
-//     task4.elapsedTime = task4.period;
-//     task4.TickFct = &Display;
+    task2.state = ColumnStart;
+    task2.period = 50;
+    task2.elapsedTime = task2.period;
+    task2.TickFct = &ColumnSelect;
+	
+//     task1.state = shift;
+//     task1.period = 100;
+//     task1.elapsedTime = task3.period;
+//     task1.TickFct = &Demo_Tick;
+	
+    task4.state = DisplayLoop;
+    task4.period = 1;
+    task4.elapsedTime = task4.period;
+    task4.TickFct = &Display;
 	
     unsigned long GCD = tasks[0]->period;
 	for (i = 1; i < numTasks; i++) {
