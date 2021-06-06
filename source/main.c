@@ -1,8 +1,7 @@
-/*	Author: lab
- *  Partner(s) Name: 
- *	Lab Section:
- *	Assignment: Lab #  Exercise #
- *	Exercise Description: [optional - include for your own benefit]
+/*	Author: Daisy Cheng dchen213@ucr.edu
+ *	Lab Section: 021
+ *	Assignment: Lab # 11 Exercise # N/A
+ *	Exercise Description: 
  *
  *	I acknowledge all content contained herein, excluding template or example
  *	code, is my own original work.
@@ -53,7 +52,7 @@ int Demo_Tick(int state){
         return state;
 }
 */
-
+/*
 enum 1p_states { 1pDisplay };
 int 1pdisplay(int state) {
 	unsigned char column = 0x7F;
@@ -69,89 +68,120 @@ int 1pdisplay(int state) {
 	}
 	switch(state) {
 		for(count = 0; count < 8; count++) {
-			
+*/			
 
+unsigned char columnCount[8] = {7, 7, 7, 7, 7, 7, 7, 7};
+unsigned char Columns [8][7] = {};
+unsigned char columnNum = 0;
+unsigned char column = 0x7F;
+unsigned char down = 0x80;
+unsigned char i = 0;
 
-
-enum Drop_states { DropStart, DropWait, DropRight, DropLeft, DropEnter, DropPressed };
-int Drop(int state){
-	static unsigned char column = 0x7F;
-	static unsigned char down = 0x80;
+enum Drop_states { DropStart, DropWait, DropEnter };
+int Drop(int state) {
 	switch(state) {
 		case DropStart:
 			state = DropWait;
 			break;
 		case DropWait:
-			if(~PINA & 0x01) {
-				state = DropRight;
-			}
-			else if(~PINA & 0x04) {
-				state = DropLeft;
-			}
-			else if(~PINA & 0x02) {
+			if(~PINA & 0x02) {
 				state = DropEnter;
-			}
-			else {
-				state = DropWait;
-			}
-			break;
-		case DropRight:
-			if(~PINA & 0x01) {
-				state = DropPressed;
-			}
-			else {
-				state = DropWait;
-			}
-			break;
-		case DropLeft:
-			if(~PINA & 0x04) {
-				state = DropPressed;
 			}
 			else {
 				state = DropWait;
 			}
 			break;
 		case DropEnter:
-			if(~PINA & 0x04) {
+			if(i < columnCount[columnNum]) {
 				state = DropEnter;
 			}
 			else {
 				state = DropWait;
+				i = 0;
+				columnCount[columnNum] -= 1;
 			}
 			break;
-		case DropPressed:
-			if(!(~PINA & 0x01) & !(~PINA & 0x04) & !(~PINA & 0x02)) {
-				state = DropWait;
+	}
+	switch(state) {
+		case DropStart:
+			break;
+		case DropWait:
+			down = 0x80;
+			break;
+		case DropEnter:
+			down >>= 1;
+	}
+	PORTC = down;
+	return state;
+}
+			
+				
+
+enum Column_states { ColumnStart, ColumnWait, ColumnRight, ColumnLeft, ColumnPressed };
+int ColumnSelect(int state){
+	switch(state) {
+		case ColumnStart:
+			state = ColumnWait;
+			break;
+		case ColumnWait:
+			if(~PINA & 0x01) {
+				state = ColumnRight;
+			}
+			else if(~PINA & 0x04) {
+				state = ColumnLeft;
+			}
+			else if(~PINA & 0x02) {
+				state = ColumnEnter;
 			}
 			else {
-				state = DropPressed;
+				state = ColumnWait;
+			}
+			break;
+		case ColumnRight:
+			if(~PINA & 0x01) {
+				state = ColumnPressed;
+			}
+			else {
+				state = ColumnWait;
+			}
+			break;
+		case ColumnLeft:
+			if(~PINA & 0x04) {
+				state = ColumnPressed;
+			}
+			else {
+				state = ColumnWait;
+			}
+			break;
+		case ColumnPressed:
+			if(!(~PINA & 0x01) & !(~PINA & 0x04)) {
+				state = ColumnWait;
+			}
+			else {
+				state = ColumnPressed;
 			}
 			break;
 	}
 	switch(state){
-		case DropStart:
+		case ColumnStart:
 			break;
-		case DropWait:
+		case ColumnWait:
 			break;
-		case DropRight:
+		case ColumnRight:
 			if(column != 0xFE) {
 				column = (column >> 1) | 0x80;
+				columnNum += 1;
 			}
 			break;
-		case DropLeft:
+		case ColumnLeft:
 			if(column != 0x7F) {
 				column = (column << 1) | 0x01;
+				columnNum -= 1;
 			}
 			break;
-		case DropEnter:
-			if(down != 0x01) {
-				down >>= 1;
-			}
-			break;
-		case DropPressed:
+		case ColumnPressed:
 			break;
 	}
-	PORTC = down;
 	PORTD = column;
 	return state;
 }
@@ -164,8 +194,8 @@ int main(){
     DDRC = 0xFF; PORTC = 0x00;
     DDRD = 0xFF; PORTD = 0x00;
 
-    static task task1;
-    task *tasks[] = {&task1};
+    static task task1, task2;
+    task *tasks[] = {&task1, &task2};
     const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
 
     const char start = -1;
@@ -174,8 +204,13 @@ int main(){
     task1.period = 100;
     task1.elapsedTime = task1.period;
     task1.TickFct = &Drop;
+	
+    task2.state = ColumnStart;
+    task2.period = 50;
+    task2.elapsedTime = task2.period;
+    task2.TickFct = &ColumnSelect;
 
-    TimerSet(100);
+    TimerSet(50);
     TimerOn();
 
     unsigned short i;
