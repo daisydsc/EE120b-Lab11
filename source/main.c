@@ -71,7 +71,7 @@ int 1pdisplay(int state) {
 */			
 
 unsigned char columnCount[8] = {7, 7, 7, 7, 7, 7, 7, 7};
-unsigned char ColumnPattern[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+unsigned char columnPattern[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 unsigned char columnNum = 0;
 unsigned char column = 0x7F;
 unsigned char down = 0x80;
@@ -79,6 +79,7 @@ unsigned char i = 0;
 unsigned char tempD1;
 unsigned char tempD2;
 unsigned char tempC1;
+unsigned char tempC2;
 unsigned char tempB1;
 
 enum Board_states { Board };
@@ -88,7 +89,7 @@ int GameBoard(int state) {
 	static unsigned char rowNum = 0;
 	switch(state) {
 		case Board:
-			state = DisplayWait;
+			state = Board;
 			break;
 	}
 	switch(state) {
@@ -104,7 +105,7 @@ int GameBoard(int state) {
                         break;
 	}
 	tempD2 = row;
-	tempC2 = ColumnPattern[rowNum];
+	tempC2 = columnPattern[rowNum];
 	return state;
 }
 
