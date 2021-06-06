@@ -103,7 +103,7 @@ int GameBoard(int state) {
                         }
                         break;
 	}
-	PORTD = col;
+	PORTD = 0x7F;
 	PORTC = 0x01;
 	return state;
 }
