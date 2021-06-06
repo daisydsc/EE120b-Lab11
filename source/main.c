@@ -76,9 +76,9 @@ unsigned char columnNum = 0;
 unsigned char column = 0x7F;
 unsigned char down = 0x80;
 unsigned char i = 0;
-unsigned char tempD1;
+unsigned char tempD1 = 0x7F;
 unsigned char tempD2;
-unsigned char tempC1;
+unsigned char tempC1 = 0x80;
 unsigned char tempC2;
 unsigned char tempB1;
 /*
