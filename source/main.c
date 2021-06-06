@@ -94,6 +94,7 @@ int Drop(int state) {
 		case DropEnter:
 			if(i < columnCount[columnNum]) {
 				state = DropEnter;
+				i++;
 			}
 			else {
 				state = DropWait;
