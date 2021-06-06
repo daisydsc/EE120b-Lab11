@@ -130,9 +130,6 @@ int ColumnSelect(int state){
 			else if(~PINA & 0x04) {
 				state = ColumnLeft;
 			}
-			else if(~PINA & 0x02) {
-				state = ColumnEnter;
-			}
 			else {
 				state = ColumnWait;
 			}
