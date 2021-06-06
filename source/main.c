@@ -267,10 +267,10 @@ int main(){
 //     task2.elapsedTime = task2.period;
 //     task2.TickFct = &ColumnSelect;
 	
-    task3.state = shift;
-    task3.period = 100;
-    task3.elapsedTime = task3.period;
-    task3.TickFct = &Demo_Tick;
+    task1.state = shift;
+    task1.period = 100;
+    task1.elapsedTime = task3.period;
+    task1.TickFct = &Demo_Tick;
 	
 //     task4.state = DisplayLoop;
 //     task4.period = 1;
