@@ -239,7 +239,7 @@ int main(){
     DDRC = 0xFF; PORTC = 0x00;
     DDRD = 0xFF; PORTD = 0x00;
 	
-    unsigned char i = 0;
+    unsigned short i;
 
     static task task1, task2, task3, task4;
     task *tasks[] = {&task1, &task2, &task3};
@@ -274,8 +274,7 @@ int main(){
 
     TimerSet(GCD);
     TimerOn();
-
-    unsigned short i;
+	
     while(1){
         for(i = 0; i < numTasks; i++){
             if(tasks[i]->elapsedTime == tasks[i]->period){
