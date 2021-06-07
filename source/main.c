@@ -68,7 +68,7 @@ int 1pdisplay(int state) {
 		for(count = 0; count < 8; count++) {
 */			
 
-unsigned char columnCount[8] = {6, 6, 6, 6, 6, 6, 6, 6};
+unsigned char columnCount[8] = {7, 7, 7, 7, 7, 7, 7, 7};
 unsigned char columnPattern[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 unsigned char columnNum = 0;
 unsigned char column = 0x7F;
@@ -79,7 +79,7 @@ unsigned char tempD2;
 unsigned char tempC1;
 unsigned char tempC2;
 unsigned char tempB1;
-/*
+
 enum Board_states { Board };
 int GameBoard(int state) {
 	static unsigned char pattern;
@@ -102,10 +102,10 @@ int GameBoard(int state) {
                         }
                         break;
 	}
-	tempD2 = row;
-	tempC2 = columnPattern[rowNum];
+	PORTD = row;
+	PORTC = columnPattern[rowNum];
 	return state;
-}*/
+}
 
 enum Drop_states { DropStart, DropWait, DropEnter };
 int Drop(int state) {
@@ -130,7 +130,7 @@ int Drop(int state) {
 				state = DropWait;
 				i = 0;
 				columnCount[columnNum] -= 1;
-				columnPattern[columnNum] = (columnPattern[columnNum] << 1) | 0x01;
+				columnPattern[columnNum] = /*(columnPattern[columnNum] << 1) |*/ 0x01;
 				columnNum = 0;
 				column = 0x7F;
 			}
@@ -243,7 +243,7 @@ int main(){
     DDRD = 0xFF; PORTD = 0x00;
 
     static task task1, task2, task3, task4;
-    task *tasks[] = {&task1, &task2};
+    task *tasks[] = {&task1, &task2, &task3};
     const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
 
     const char start = -1;
@@ -258,10 +258,10 @@ int main(){
     task2.elapsedTime = task2.period;
     task2.TickFct = &ColumnSelect;
 	
-//     task3.state = Board;
-//     task3.period = 1;
-//     task3.elapsedTime = task3.period;
-//     task3.TickFct = &GameBoard;
+    task3.state = Board;
+    task3.period = 20;
+    task3.elapsedTime = task3.period;
+    task3.TickFct = &GameBoard;
 	
 //     task4.state = DisplayLoop;
 //     task4.period = 1;
