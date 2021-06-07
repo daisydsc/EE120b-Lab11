@@ -6,6 +6,15 @@
  *	I acknowledge all content contained herein, excluding template or example
  *	code, is my own original work.
  */
+#include <avr/io.h>
+#include "timer.h"
+#include "scheduler.h"
+#include "bit.h"
+#include "keypad.h"
+#ifdef _SIMULATE_
+#include "simAVRHeader.h"
+#endif
+
 /*
 enum Demo_States {shift};
 int Demo_Tick(int state){
@@ -206,10 +215,12 @@ int ColumnSelect(int state){
 			break;
 	}
 	if(player == 0) {
-	PORTD = column;
+		PORTD = column;
+		player++;
 	}
 	else {
 		PORTB = column;
+		player = 0;
 	}
 	return state;
 }
