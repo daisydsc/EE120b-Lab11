@@ -6,16 +6,6 @@
  *	I acknowledge all content contained herein, excluding template or example
  *	code, is my own original work.
  */
-#include <avr/io.h>
-#include "timer.h"
-#include "scheduler.h"
-#include "bit.h"
-#include "keypad.h"
-#ifdef _SIMULATE_
-#include "simAVRHeader.h"
-#endif
-
-
 /*
 enum Demo_States {shift};
 int Demo_Tick(int state){
@@ -79,7 +69,8 @@ unsigned char tempD2;
 unsigned char tempC1;
 unsigned char tempC2;
 unsigned char tempB1;
-
+int player = 0;
+/*
 enum Board_states { Board };
 int GameBoard(int state) {
 	static unsigned char pattern;
@@ -102,10 +93,10 @@ int GameBoard(int state) {
                         }
                         break;
 	}
-	PORTD = row;
-	PORTC = columnPattern[rowNum];
+	tempD2 = row;
+	tempC2 = columnPattern[rowNum];
 	return state;
-}
+}*/
 
 enum Drop_states { DropStart, DropWait, DropEnter };
 int Drop(int state) {
@@ -214,7 +205,12 @@ int ColumnSelect(int state){
 		case ColumnPressed:
 			break;
 	}
+	if(player == 0) {
 	PORTD = column;
+	}
+	else {
+		PORTB = column;
+	}
 	return state;
 }
 
@@ -243,7 +239,7 @@ int main(){
     DDRD = 0xFF; PORTD = 0x00;
 
     static task task1, task2, task3, task4;
-    task *tasks[] = {&task1, &task2, &task3};
+    task *tasks[] = {&task1, &task2};
     const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
 
     const char start = -1;
@@ -259,7 +255,7 @@ int main(){
     task2.TickFct = &ColumnSelect;
 	
 //     task3.state = Board;
-//     task3.period = 20;
+//     task3.period = 1;
 //     task3.elapsedTime = task3.period;
 //     task3.TickFct = &GameBoard;
 	
