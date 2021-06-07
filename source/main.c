@@ -238,6 +238,8 @@ int main(){
     DDRA = 0x00; PORTA = 0xFF;
     DDRC = 0xFF; PORTC = 0x00;
     DDRD = 0xFF; PORTD = 0x00;
+	
+    unsigned char i = 0;
 
     static task task1, task2, task3, task4;
     task *tasks[] = {&task1, &task2, &task3};
