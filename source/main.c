@@ -69,7 +69,6 @@ int 1pdisplay(int state) {
 
 unsigned char columnCount[8] = {7, 7, 7, 7, 7, 7, 7, 7};
 unsigned char columnPattern[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-unsigned char columnSequence[8] = {0x7F, 0xBF, 0xDF, 0xEF, 0xF7, 0xFB, 0xFD, 0xFE};
 unsigned char columnNum = 0;
 unsigned char column = 0x7F;
 unsigned char down = 0x80;
@@ -79,24 +78,33 @@ unsigned char tempD2;
 unsigned char tempC1;
 unsigned char tempC2;
 unsigned char tempB1;
-int player = 0;
-
-// enum Board_states { Board };
-// int GameBoard(int state) {
-// static unsigned char i = 0;
-// 	switch(state) {
-// 		case Board:
-// 			if(i < 8) {
-// 				PORTD = columnSequence[i];
-// 				PORTC = columnPattern[i];
-// 				i++;
-// 			}
-// 			else {
-// 				i = 0;
-// 			}
-// 			break;
-// 	}
-// }
+/*
+enum Board_states { Board };
+int GameBoard(int state) {
+	static unsigned char pattern;
+        static unsigned char row = 0x7F;
+	static unsigned char rowNum = 0;
+	switch(state) {
+		case Board:
+			state = Board;
+			break;
+	}
+	switch(state) {
+		case Board:
+			if(row == 0xFE){
+                                row = 0x7F;
+				rowNum = 0;
+                        }
+                        else{
+                                row = (row >> 1) | 0x80;
+				rowNum += 1;
+                        }
+                        break;
+	}
+	tempD2 = row;
+	tempC2 = columnPattern[rowNum];
+	return state;
+}*/
 
 enum Drop_states { DropStart, DropWait, DropEnter };
 int Drop(int state) {
@@ -232,11 +240,9 @@ int main(){
     DDRA = 0x00; PORTA = 0xFF;
     DDRC = 0xFF; PORTC = 0x00;
     DDRD = 0xFF; PORTD = 0x00;
-	
-    unsigned short i;
 
     static task task1, task2, task3, task4;
-    task *tasks[] = {&task1, &task2, &task3};
+    task *tasks[] = {&task1, &task2};
     const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
 
     const char start = -1;
@@ -268,7 +274,8 @@ int main(){
 
     TimerSet(GCD);
     TimerOn();
-	
+
+    unsigned short i;
     while(1){
         for(i = 0; i < numTasks; i++){
             if(tasks[i]->elapsedTime == tasks[i]->period){
