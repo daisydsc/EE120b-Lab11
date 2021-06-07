@@ -99,6 +99,7 @@ int player = 0;
 
 enum Drop_states { DropStart, DropWait, DropEnter };
 int Drop(int state) {
+	static unsigned char i = 0;
 	switch(state) {
 		case DropStart:
 			state = DropWait;
@@ -144,6 +145,7 @@ int Drop(int state) {
 
 enum Column_states { ColumnStart, ColumnWait, ColumnRight, ColumnLeft, ColumnPressed };
 int ColumnSelect(int state){
+	
 	switch(state) {
 		case ColumnStart:
 			state = ColumnWait;
