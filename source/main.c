@@ -130,7 +130,7 @@ int Drop(int state) {
 				state = DropWait;
 				i = 0;
 				columnCount[columnNum] -= 1;
-				columnPattern[columnNum] = /*(columnPattern[columnNum] << 1) |*/ 0x01;
+				columnPattern[columnNum] = (columnPattern[columnNum] << 1) | 0x01;
 				columnNum = 0;
 				column = 0x7F;
 			}
@@ -258,10 +258,10 @@ int main(){
     task2.elapsedTime = task2.period;
     task2.TickFct = &ColumnSelect;
 	
-    task3.state = Board;
-    task3.period = 20;
-    task3.elapsedTime = task3.period;
-    task3.TickFct = &GameBoard;
+//     task3.state = Board;
+//     task3.period = 20;
+//     task3.elapsedTime = task3.period;
+//     task3.TickFct = &GameBoard;
 	
 //     task4.state = DisplayLoop;
 //     task4.period = 1;
