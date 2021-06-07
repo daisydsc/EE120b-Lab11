@@ -69,161 +69,151 @@ int 1pdisplay(int state) {
 
 unsigned char columnCount[8] = {7, 7, 7, 7, 7, 7, 7, 7};
 unsigned char columnPattern[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+unsigned char columnSequence[8] = {0x7F, 0xBF, 0xDF, 0xEF, 0xF7, 0xFB, 0xFD, 0xFE};
 unsigned char columnNum = 0;
 unsigned char column = 0x7F;
 unsigned char down = 0x80;
-unsigned char i = 0;
 unsigned char tempD1;
 unsigned char tempD2;
 unsigned char tempC1;
 unsigned char tempC2;
 unsigned char tempB1;
 int player = 0;
-/*
+
 enum Board_states { Board };
 int GameBoard(int state) {
-	static unsigned char pattern;
-        static unsigned char row = 0x7F;
-	static unsigned char rowNum = 0;
+static unsigned char i = 0;
 	switch(state) {
 		case Board:
-			state = Board;
-			break;
-	}
-	switch(state) {
-		case Board:
-			if(row == 0xFE){
-                                row = 0x7F;
-				rowNum = 0;
-                        }
-                        else{
-                                row = (row >> 1) | 0x80;
-				rowNum += 1;
-                        }
-                        break;
-	}
-	tempD2 = row;
-	tempC2 = columnPattern[rowNum];
-	return state;
-}*/
-
-enum Drop_states { DropStart, DropWait, DropEnter };
-int Drop(int state) {
-	switch(state) {
-		case DropStart:
-			state = DropWait;
-			break;
-		case DropWait:
-			if(~PINA & 0x02) {
-				state = DropEnter;
-			}
-			else {
-				state = DropWait;
-			}
-			break;
-		case DropEnter:
-			if(i < columnCount[columnNum]) {
-				state = DropEnter;
+			if(i < 8) {
+				PORTD = columnSequence[i];
+				PORTC = columnPattern[i];
 				i++;
 			}
 			else {
-				state = DropWait;
 				i = 0;
-				columnCount[columnNum] -= 1;
-				columnPattern[columnNum] = (columnPattern[columnNum] << 1) | 0x01;
-				columnNum = 0;
-				column = 0x7F;
 			}
 			break;
 	}
-	switch(state) {
-		case DropStart:
-			break;
-		case DropWait:
-			down = 0x80;
-			break;
-		case DropEnter:
-			down >>= 1;
-			break;
-	}
-	PORTC = down;
-	return state;
 }
+
+// enum Drop_states { DropStart, DropWait, DropEnter };
+// int Drop(int state) {
+// 	switch(state) {
+// 		case DropStart:
+// 			state = DropWait;
+// 			break;
+// 		case DropWait:
+// 			if(~PINA & 0x02) {
+// 				state = DropEnter;
+// 			}
+// 			else {
+// 				state = DropWait;
+// 			}
+// 			break;
+// 		case DropEnter:
+// 			if(i < columnCount[columnNum]) {
+// 				state = DropEnter;
+// 				i++;
+// 			}
+// 			else {
+// 				state = DropWait;
+// 				i = 0;
+// 				columnCount[columnNum] -= 1;
+// 				columnPattern[columnNum] = (columnPattern[columnNum] << 1) | 0x01;
+// 				columnNum = 0;
+// 				column = 0x7F;
+// 			}
+// 			break;
+// 	}
+// 	switch(state) {
+// 		case DropStart:
+// 			break;
+// 		case DropWait:
+// 			down = 0x80;
+// 			break;
+// 		case DropEnter:
+// 			down >>= 1;
+// 			break;
+// 	}
+// 	PORTC = down;
+// 	return state;
+// }
 			
 				
 
-enum Column_states { ColumnStart, ColumnWait, ColumnRight, ColumnLeft, ColumnPressed };
-int ColumnSelect(int state){
-	switch(state) {
-		case ColumnStart:
-			state = ColumnWait;
-			break;
-		case ColumnWait:
-			if(~PINA & 0x01) {
-				state = ColumnRight;
-			}
-			else if(~PINA & 0x04) {
-				state = ColumnLeft;
-			}
-			else {
-				state = ColumnWait;
-			}
-			break;
-		case ColumnRight:
-			if(~PINA & 0x01) {
-				state = ColumnPressed;
-			}
-			else {
-				state = ColumnWait;
-			}
-			break;
-		case ColumnLeft:
-			if(~PINA & 0x04) {
-				state = ColumnPressed;
-			}
-			else {
-				state = ColumnWait;
-			}
-			break;
-		case ColumnPressed:
-			if(!(~PINA & 0x01) & !(~PINA & 0x04)) {
-				state = ColumnWait;
-			}
-			else {
-				state = ColumnPressed;
-			}
-			break;
-	}
-	switch(state){
-		case ColumnStart:
-			break;
-		case ColumnWait:
-			break;
-		case ColumnRight:
-			if(column != 0xFE) {
-				column = (column >> 1) | 0x80;
-				columnNum += 1;
-			}
-			break;
-		case ColumnLeft:
-			if(column != 0x7F) {
-				column = (column << 1) | 0x01;
-				columnNum -= 1;
-			}
-			break;
-		case ColumnPressed:
-			break;
-	}
-	if(player == 0) {
-		PORTD = column;
-		player++;
-	}
-	else {
-		PORTB = column;
-		player = 0;
-	}
-	return state;
-}
+// enum Column_states { ColumnStart, ColumnWait, ColumnRight, ColumnLeft, ColumnPressed };
+// int ColumnSelect(int state){
+// 	switch(state) {
+// 		case ColumnStart:
+// 			state = ColumnWait;
+// 			break;
+// 		case ColumnWait:
+// 			if(~PINA & 0x01) {
+// 				state = ColumnRight;
+// 			}
+// 			else if(~PINA & 0x04) {
+// 				state = ColumnLeft;
+// 			}
+// 			else {
+// 				state = ColumnWait;
+// 			}
+// 			break;
+// 		case ColumnRight:
+// 			if(~PINA & 0x01) {
+// 				state = ColumnPressed;
+// 			}
+// 			else {
+// 				state = ColumnWait;
+// 			}
+// 			break;
+// 		case ColumnLeft:
+// 			if(~PINA & 0x04) {
+// 				state = ColumnPressed;
+// 			}
+// 			else {
+// 				state = ColumnWait;
+// 			}
+// 			break;
+// 		case ColumnPressed:
+// 			if(!(~PINA & 0x01) & !(~PINA & 0x04)) {
+// 				state = ColumnWait;
+// 			}
+// 			else {
+// 				state = ColumnPressed;
+// 			}
+// 			break;
+// 	}
+// 	switch(state){
+// 		case ColumnStart:
+// 			break;
+// 		case ColumnWait:
+// 			break;
+// 		case ColumnRight:
+// 			if(column != 0xFE) {
+// 				column = (column >> 1) | 0x80;
+// 				columnNum += 1;
+// 			}
+// 			break;
+// 		case ColumnLeft:
+// 			if(column != 0x7F) {
+// 				column = (column << 1) | 0x01;
+// 				columnNum -= 1;
+// 			}
+// 			break;
+// 		case ColumnPressed:
+// 			break;
+// 	}
+// 	if(player == 0) {
+// 		PORTD = column;
+// 		player++;
+// 	}
+// 	else {
+// 		PORTB = column;
+// 		player = 0;
+// 	}
+// 	return state;
+// }
 
 // enum Display_states { DisplayLoop };
 // int Display(int state) {
@@ -250,25 +240,25 @@ int main(){
     DDRD = 0xFF; PORTD = 0x00;
 
     static task task1, task2, task3, task4;
-    task *tasks[] = {&task1, &task2};
+    task *tasks[] = {&task1, &task2, &task3};
     const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
 
     const char start = -1;
 
-    task1.state = DropStart;
-    task1.period = 100;
-    task1.elapsedTime = task1.period;
-    task1.TickFct = &Drop;
+//     task1.state = DropStart;
+//     task1.period = 100;
+//     task1.elapsedTime = task1.period;
+//     task1.TickFct = &Drop;
 	
-    task2.state = ColumnStart;
-    task2.period = 50;
-    task2.elapsedTime = task2.period;
-    task2.TickFct = &ColumnSelect;
+//     task2.state = ColumnStart;
+//     task2.period = 50;
+//     task2.elapsedTime = task2.period;
+//     task2.TickFct = &ColumnSelect;
 	
-//     task3.state = Board;
-//     task3.period = 1;
-//     task3.elapsedTime = task3.period;
-//     task3.TickFct = &GameBoard;
+    task3.state = Board;
+    task3.period = 1;
+    task3.elapsedTime = task3.period;
+    task3.TickFct = &GameBoard;
 	
 //     task4.state = DisplayLoop;
 //     task4.period = 1;
