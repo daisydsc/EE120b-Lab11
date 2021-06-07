@@ -73,6 +73,7 @@ unsigned char columnSequence[8] = {0x7F, 0xBF, 0xDF, 0xEF, 0xF7, 0xFB, 0xFD, 0xF
 unsigned char columnNum = 0;
 unsigned char column = 0x7F;
 unsigned char down = 0x80;
+unsigned char i = 0;
 unsigned char tempD1;
 unsigned char tempD2;
 unsigned char tempC1;
@@ -99,7 +100,6 @@ int player = 0;
 
 enum Drop_states { DropStart, DropWait, DropEnter };
 int Drop(int state) {
-	static unsigned char i = 0;
 	switch(state) {
 		case DropStart:
 			state = DropWait;
@@ -145,7 +145,6 @@ int Drop(int state) {
 
 enum Column_states { ColumnStart, ColumnWait, ColumnRight, ColumnLeft, ColumnPressed };
 int ColumnSelect(int state){
-	
 	switch(state) {
 		case ColumnStart:
 			state = ColumnWait;
@@ -206,14 +205,7 @@ int ColumnSelect(int state){
 		case ColumnPressed:
 			break;
 	}
-	if(player == 0) {
-		PORTD = column;
-		player++;
-	}
-	else {
-		PORTB = column;
-		player = 0;
-	}
+	PORTD = column;
 	return state;
 }
 
