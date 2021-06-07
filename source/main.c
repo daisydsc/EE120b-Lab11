@@ -15,6 +15,11 @@
 #include "simAVRHeader.h"
 #endif
 
+//=====================================================================
+	
+// 		DEMO CODE TO TEST LED MATRIX
+		
+//=====================================================================
 /*
 enum Demo_States {shift};
 int Demo_Tick(int state){
@@ -48,25 +53,13 @@ int Demo_Tick(int state){
         PORTD = row;
         return state;
 }
-*/
-/*
-enum 1p_states { 1pDisplay };
-int 1pdisplay(int state) {
-	unsigned char column = 0x7F;
-	unsigned char pattern;
-	unsigned char sequence [8] = {0x00, 0x00, 0x7E, 0x00, 0x7E, 0x48, 0x48, 0x30};
-	static unsigned char count = 0;
-	switch(state) {
-		case 1pDisplay:
-			break;
-		default:
-			state = 1pDisplay;
-			break;
-	}
-	switch(state) {
-		for(count = 0; count < 8; count++) {
-*/			
+*/	
 
+//=====================================================================
+	
+// 		GLOBAL VARIABLES
+		
+//=====================================================================
 unsigned char columnCount[8] = {7, 7, 7, 7, 7, 7, 7, 7};
 unsigned char columnPattern[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 unsigned char columnNum = 0;
@@ -77,7 +70,53 @@ unsigned char tempD1;
 unsigned char tempD2;
 unsigned char tempC1;
 unsigned char tempC2;
-unsigned char tempB1;
+unsigned char Winner;
+
+//=====================================================================
+	
+// 		ALLOWS GAME TO BE RESET WHEN SOMEONE WINS
+		
+//=====================================================================
+// enum Game_states { GameStart, GamePlaying, GameRestart };
+// int Game(int state) {
+// 	switch(state) {
+// 		case GameStart:
+// 			state = GamePlaying;
+// 			break;
+// 		case GamePlaying:
+// 			if(Winner != 1) {
+// 				state = GamePlaying;
+// 			}
+// 			else {
+// 				state = GameRestart;
+// 			}
+// 			break;
+// 		case GameRestart:
+// 			state = GameStart;
+// 			break;
+// 	}
+// 	switch(state) {
+// 		case GameStart:
+// 			break;
+// 		case GamePlaying:
+// 			break;
+// 		case GameRestart:
+// 			for(i = 0; i < 8; i++) {
+// 				columnCount[i] = 7;
+// 				columnPattern[i] = 0x00;
+// 			}
+// 			columnNum = 0;
+// 			column = 0x7F;
+// 			down = 0x80;
+// 	}
+// 	return state;
+// }
+
+//=====================================================================
+	
+// 		GAMEBOARD: KEEPS TRACK OF PIECES PLAYED
+		
+//=====================================================================
 /*
 enum Board_states { Board };
 int GameBoard(int state) {
@@ -106,6 +145,11 @@ int GameBoard(int state) {
 	return state;
 }*/
 
+//=====================================================================
+	
+// 		"CHIP" DROPS DOWN WHEN ENTER BUTON PRESSED
+		
+//=====================================================================
 enum Drop_states { DropStart, DropWait, DropEnter };
 int Drop(int state) {
 	switch(state) {
@@ -150,7 +194,11 @@ int Drop(int state) {
 }
 			
 				
-
+//=====================================================================
+	
+// 		COLUMN SELECTION WITH BUTTONS
+		
+//=====================================================================
 enum Column_states { ColumnStart, ColumnWait, ColumnRight, ColumnLeft, ColumnPressed };
 int ColumnSelect(int state){
 	switch(state) {
@@ -217,6 +265,51 @@ int ColumnSelect(int state){
 	return state;
 }
 
+//=====================================================================
+	
+// 		CHECK FOR WIN CONDITIONS
+		
+//=====================================================================
+// enum Win_States { WinRow, WinColumn }
+// int CheckWin(int state) {
+// 	static char j = 0;
+// 	switch(state) {
+// 		case WinRow:
+// 			state = WinColumn;
+// 			break;
+// 		case WinColumn:
+// 			state = WinRow;
+// 			break;
+// 	}
+// 	switch(state) {
+// 		case WinRow:
+// 			unsigned char test = 0x01;
+// 			for(i = 0; i < 8; i++) {
+// 				for(j = 0; j < 5; j++) {
+// 					if(((ColumnPattern[j] & test) == test) && ((ColumnPattern[j + 1] & test) == test) && ((ColumnPattern[j + 2] & test) == test) && ((ColumnPattern[j + 3] & test) == test)) {
+// 						Winner = 1;
+// 					}
+// 				}
+// 				test <<= 1;
+// 			}
+// 			break;
+// 		case WinColumn:
+// 			for(j = 0; j < 4; j++) {
+// 				if(((ColumnPattern[j] & 0x0F) == 0x0F) ||  ((ColumnPattern[j] & 0x1E) == 0x1E) ||  ((ColumnPattern[j] & 0x3C) == 0x3C) ||  ((ColumnPattern[j] & 0x78) == 0x78)) {
+// 					Winner = 1;
+// 				}
+// 			}
+// 			break;
+// 	}
+// 	return state;
+// }
+
+
+//=====================================================================
+	
+// 		COMBINES PREVIOUS SM'S TO DISPLAY ALL PARTS
+		
+//=====================================================================
 // enum Display_states { DisplayLoop };
 // int Display(int state) {
 // 	switch (state) {
@@ -241,8 +334,8 @@ int main(){
     DDRC = 0xFF; PORTC = 0x00;
     DDRD = 0xFF; PORTD = 0x00;
 
-    static task task1, task2, task3, task4;
-    task *tasks[] = {&task1, &task2};
+    static task task1, task2, task3, task4, task5, task6;
+    task *tasks[] = {&task1, &task2, &task3, &task4, &task5, &task6};
     const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
 
     const char start = -1;
@@ -253,7 +346,7 @@ int main(){
     task1.TickFct = &Drop;
 	
     task2.state = ColumnStart;
-    task2.period = 50;
+    task2.period = 100;
     task2.elapsedTime = task2.period;
     task2.TickFct = &ColumnSelect;
 	
@@ -266,6 +359,16 @@ int main(){
 //     task4.period = 1;
 //     task4.elapsedTime = task4.period;
 //     task4.TickFct = &Display;
+	
+//     task5.state = GameStart;
+//     task5.period = 50;
+//     task5.elapsedTime = task5.period;
+//     task5.TickFct = &Game;
+	
+//     task6.state = WinRow;
+//     task6.period = 500;
+//     task6.elapsedTime = task6.period;
+//     task6.TickFct = &CheckWin;
 	
     unsigned long GCD = tasks[0]->period;
 	for (i = 1; i < numTasks; i++) {
